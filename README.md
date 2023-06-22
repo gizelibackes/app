@@ -1,6 +1,4 @@
-# Projeto prático: Otimização de uma imagem golang
-
-Informações do desafio
+# Publicar uma imagem no docker hub
 
 Esse desafio é muito empolgante principalmente se você nunca trabalhou com a linguagem Go!
 
@@ -22,67 +20,54 @@ Compartilhe o link do repositório do Git remoto para corrigirmos seu projeto.
 
 Divirta-se!
 
-## Dockerfile
+# Dockerfile
 
-- Stage 1
-  
-# Iniciando uma imagem base golang:alpine
+```
 FROM golang:alpine AS stage1
 
-# criando diretório de trabalho
 WORKDIR /app
-
-# Copiando o app
 COPY    /app .
 
 RUN apk add --no-cache go
-
-# Compilando o binário
 RUN go build main.go
 
-- Stage 2
-# Iniciando com scratch
 FROM scratch AS stage2
-
-# diretório de trabalho
 WORKDIR /app
-
-# copiando o binário
 COPY --from=stage1 /app .
-
-# executando 
 CMD ["./main"]
-
-## Build 
+```
+  
+# Build 
 
 ```
 docker build -t <seu-user>/fullcycle
 ```
 
 ## Images
+
 ```
 docker images
 ```
 ![](image/go-images.png)
 
-## Run
+# Run
 
 ```
 docker run <seu-user>/fullcycle
 ```
 ![](image/go-scratch.png)
 
-## Docker login
+# Docker login
 
 ```
 docker login
 ```
-## Push
+# Push
 
 ```
 docker push <seu-user>/fullcycle
 ```
-## Pull
+# Pull
 
 ```
 docker pull <seu-user>/fullcycle
