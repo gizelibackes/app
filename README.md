@@ -1,70 +1,62 @@
-# Projeto prtático: Otimização de uma imagem golang
+# Projeto prático: Otimização de uma imagem golang
 
-## 🌱 Descrição do projeto 
+Informações do desafio
 
 Esse desafio é muito empolgante principalmente se você nunca trabalhou com a linguagem Go!
+
 Você terá que publicar uma imagem no docker hub. Quando executarmos:
 
-    -  docker run <seu-user>/codeeducation
+docker run <seu-user>/fullcycle
 
-Temos que ter o seguinte resultado: `Code.education Rocks!`
+Temos que ter o seguinte resultado: Full Cycle Rocks!!
 
-Se você perceber, essa imagem apenas realiza um print da mensagem como resultado final, logo, vale a pena dar uma conferida no próprio site da Go Lang para aprender como fazer um "olá mundo".
+Se você perceber, essa imagem apenas realiza um print da mensagem como resultado final, logo, 
+vale a pena dar uma conferida no próprio site da Go Lang para aprender como fazer um "olá mundo".
 
 Lembrando que a Go Lang possui imagens oficiais prontas, vale a pena consultar o Docker Hub.
-
 A imagem de nosso projeto Go precisa ter menos de 2MB =)
 
-Dica: No vídeo de introdução sobre o Docker quando falamos sobre o sistema de arquivos em camadas, apresento uma imagem "raiz", talvez seja uma boa utilizá-la.
+Suba o projeto em um repositório Git remoto e coloque o link da imagem que subiu no Docker Hub.
 
-Divirta-se
+Compartilhe o link do repositório do Git remoto para corrigirmos seu projeto.
 
-## Utilizando o multi-stage build para compilar a aplicação e otimizar a imagem
+Divirta-se!
 
-## Dockerfile.scratch
+## Dockerfile
 
 - Stage 1
-
-```
+  
 # Iniciando uma imagem base golang:alpine
-FROM golang:alpine AS builder
+FROM golang:alpine AS stage1
 
 # criando diretório de trabalho
-WORKDIR /src
+WORKDIR /app
 
 # Copiando o app
-COPY . .
+COPY    /app .
 
-# Compilando o binário removendo informações de debug
-RUN go build -ldflags '-s -w' main.go
-```
+RUN apk add --no-cache go
+
+# Compilando o binário
+RUN go build main.go
+
 - Stage 2
-```
 # Iniciando com scratch
-FROM scratch
+FROM scratch AS stage2
 
 # diretório de trabalho
-WORKDIR /
+WORKDIR /app
 
 # copiando o binário
-COPY --from=builder /src / 
+COPY --from=stage1 /app .
 
 # executando 
 CMD ["./main"]
-```
-
-## Inserindo alguns parâmetros para o linker via -ldflags
-
-- Parâmetros para o linker que vão ajudar a diminuir o tamanho do executável final  ( -ldflags '-s -w' )
-
-```
-O parâmetro -s remove informações de debug do executável e o -w impede a geração do DWARF (Debugging With Attributed Record Formats).
-```
 
 ## Build 
 
 ```
-docker build -t leoviana00/codeeducation . -f Dockerfile.scratch
+docker build -t <seu-user>/fullcycle
 ```
 
 ## Images
@@ -76,7 +68,7 @@ docker images
 ## Run
 
 ```
-docker run leoviana00/codeeducation
+docker run <seu-user>/fullcycle
 ```
 ![](image/go-scratch.png)
 
@@ -88,16 +80,15 @@ docker login
 ## Push
 
 ```
-docker pull leoviana00/codeeducation
+docker push <seu-user>/fullcycle
 ```
 ## Pull
 
 ```
-docker pull leoviana00/codeeducation
+docker pull <seu-user>/fullcycle
 ```
 
 ## Referências
 - http://goporexemplo.golangbr.org/hello-world.html
 - https://hub.docker.com/_/scratch/
 - https://hub.docker.com/_/golang/
-- https://imasters.com.br/desenvolvimento/compilacao-estatica-com-golang/
